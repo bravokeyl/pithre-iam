@@ -1,6 +1,6 @@
 {
   "name": "pithre-iam",
-  "version": "0.1.1-0",
+  "version": "0.1.1",
   "description": "AWS IAM API helper",
   "main": "index.js",
   "author": "bravokeyl",
