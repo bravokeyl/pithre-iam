@@ -5,7 +5,11 @@
 ## Install
 
 ```
-$ npm install pithre-iam
+$ npm install --save pithre-iam
+
+Or
+
+$ yarn add pithre-iam
 ```
 
 ## Usage
