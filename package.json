@@ -1,17 +1,27 @@
 {
   "name": "pithre-iam",
-  "version": "0.1.0",
-  "description": "AWS IAM actions caller",
+  "version": "0.1.1-0",
+  "description": "AWS IAM API helper",
   "main": "index.js",
   "author": "bravokeyl",
-  "license": "MIT",
-  "dependencies": {
-    "aws-sdk": "^2.199.0",
-    "chalk": "^2.3.1"
-  },
+  "license": "GPL-2.0",
   "devDependencies": {
     "eslint": "^4.9.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/bravokeyl/pithre-iam.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bravokeyl/pithre-iam/issues"
+  },
+  "homepage": "https://github.com/bravokeyl/pithre-iam#pithre-iam",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": ""
   }
 }
