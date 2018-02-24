@@ -1,0 +1,6 @@
+node_modules/
+bk/
+*.bkr
+*.bk
+*.pithre
+*.dpithre
