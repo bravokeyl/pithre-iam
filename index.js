@@ -1,4 +1,4 @@
-const fs = require('fs');
+// const fs = require('fs');
 const AWS = require('aws-sdk');
 const chalk = require('chalk');
 
@@ -17,7 +17,6 @@ const actions = Object.keys(operations);
 // console.log('Total IAM Actions: ', actions.length);
 
 const reqMembers = [];
-const args = {};
 const args0 = [];
 const args1 = [];
 const args2 = [];
@@ -77,7 +76,7 @@ const pithreUcActions = {
 };
 
 const addtoLevel = (level, method) => {
-  switch(level){
+  switch (level) {
     case 1:
       args1.push(method);
       break;
@@ -96,10 +95,10 @@ const addtoLevel = (level, method) => {
   return true;
 };
 
-const levelizeActions = (obj, method, args=[]) => {
+const levelizeActions = (obj, method, args = []) => {
   const level = args.length || 0;
   // console.log(method, args)
-  switch(level){
+  switch (level) {
     case 0:
       obj.args0.push(method);
       break;
@@ -120,22 +119,23 @@ const levelizeActions = (obj, method, args=[]) => {
       obj.miscargs.push(method);
   }
   return true;
-}
-const categorizeActions = (e, type="NA", args=[]) => {
-  switch(type) {
-    case "list":
+};
+
+const categorizeActions = (e, type = 'NA', args = []) => {
+  switch (type) {
+    case 'list':
       levelizeActions(pithreListActions, e, args);
       listActions.push(e);
       break;
-    case "get":
+    case 'get':
       levelizeActions(pithreGetActions, e, args);
       getActions.push(e);
       break;
-    case "write":
+    case 'write':
       levelizeActions(pithreWriteActions, e, args);
       writeActions.push(e);
       break;
-    case "misc":
+    case 'misc':
       levelizeActions(pithreMiscActions, e, args);
       miscActions.push(e);
       break;
@@ -143,12 +143,13 @@ const categorizeActions = (e, type="NA", args=[]) => {
       // console.log("DEFAULT TYPE", e);
       levelizeActions(pithreUcActions, e, args);
   }
-}
+};
+
 actions.forEach((e) => {
   const { input, type } = operations[e];
   const required = input ? input.required : false;
   categorizeActions(e, type, required);
-  if (!required){
+  if (!required) {
     args0.push(e);
   } else {
     const args = required.length;
@@ -156,7 +157,8 @@ actions.forEach((e) => {
     addtoLevel(args, e);
   }
 });
-const s = [...new Set(reqMembers)];
+
+// const s = [...new Set(reqMembers)];
 
 const pithreIAM = {
   args0,
@@ -167,31 +169,33 @@ const pithreIAM = {
   miscargs,
   getActions,
 };
-const pithreActions = {
-  getActions: {
-    args0: "",
-    args1: "",
-    args2: "",
-    args3: "",
-    args4: "",
-    miscargs: "",
-  }
-}
 
-const pithreGetActionsArr = Object.keys(pithreGetActions).map((e)=>pithreGetActions[e].length);
-const pithreListActionsArr = Object.keys(pithreListActions).map((e)=>pithreListActions[e].length);
-const pithreWriteActionsArr = Object.keys(pithreWriteActions).map((e)=>pithreWriteActions[e].length);
-const pithreMiscActionsArr = Object.keys(pithreMiscActions).map((e)=>pithreMiscActions[e].length);
-const pithreUcActionsArr = Object.keys(pithreUcActions).map((e)=>pithreUcActions[e].length);
+const pithreActions = [
+  pithreListActions,
+  pithreGetActions,
+  pithreWriteActions,
+  pithreMiscActions,
+];
+
+const pithreGetActionsArr =
+Object.keys(pithreGetActions).map(e => pithreGetActions[e].length);
+const pithreListActionsArr =
+Object.keys(pithreListActions).map(e => pithreListActions[e].length);
+const pithreWriteActionsArr =
+Object.keys(pithreWriteActions).map(e => pithreWriteActions[e].length);
+const pithreMiscActionsArr =
+Object.keys(pithreMiscActions).map(e => pithreMiscActions[e].length);
+const pithreUcActionsArr =
+Object.keys(pithreUcActions).map(e => pithreUcActions[e].length);
 // const pithreGetActionsArr = Object.keys(pithreGetActions).map((e)=>pithreGetActions[e].length);
 
-console.log('Total IAM Actions', actions.length,"categorized into ",[args0.length,args1.length,args2.length,args3.length,args4.length,
+console.log('Total IAM Actions', actions.length, 'categorized into ', [args0.length, args1.length, args2.length, args3.length, args4.length,
   miscargs.length]);
-console.log('IAM Get actions', getActions.length, 'levelized into ',pithreGetActionsArr);
-console.log('IAM List actions', listActions.length, 'levelized into ',pithreListActionsArr);
-console.log('IAM Write actions', writeActions.length, 'levelized into ',pithreWriteActionsArr);
-console.log('IAM Misc actions', miscActions.length, 'levelized into ',pithreMiscActionsArr);
-console.log('IAM UC actions', ucActions.length, 'levelized into ',pithreUcActionsArr);
+console.log('IAM Get actions', getActions.length, 'levelized into ', pithreGetActionsArr);
+console.log('IAM List actions', listActions.length, 'levelized into ', pithreListActionsArr);
+console.log('IAM Write actions', writeActions.length, 'levelized into ', pithreWriteActionsArr);
+console.log('IAM Misc actions', miscActions.length, 'levelized into ', pithreMiscActionsArr);
+console.log('IAM UC actions', ucActions.length, 'levelized into ', pithreUcActionsArr);
 // console.log('Pithre Get Actions', pithreGetActionsArr);
 
 // console.log(pithreIAM);
@@ -202,23 +206,22 @@ console.log('IAM UC actions', ucActions.length, 'levelized into ',pithreUcAction
 // });
 const makeRequest = (method, params, dryrun = true) => {
   const action = lowerFirst(method);
-  let pParams = {};
-  if(Array.isArray(params)) {
+  const pParams = {};
+  if (Array.isArray(params)) {
     params.forEach((p) => {
       pParams[p] = defaultArgs[p];
     });
   }
   // console.log(action, pParams);
 
-  if(!dryrun) {
-    iam[action](pParams, (err, data) => {
-      if (err){
-        console.log("=====");
-        console.log("ERR", method);
+  if (!dryrun) {
+    iam[action](pParams, (err) => {
+      if (err) {
+        console.log('=====');
+        console.log('ERR: ', method);
         console.log(err.code);
         console.log(err.message);
-      }
-      else {
+      } else {
         console.log(chalk.green(action));
         // fs.writeFile(`bk/${e}.json`, JSON.stringify(data), (error) => {
         //   if (error) {
